@@ -1,33 +1,40 @@
-import { IncomingMessage, ServerResponse, RequestListener } from 'http';
+import { IncomingMessage, RequestListener, ServerResponse } from 'http';
+import path from 'path';
 
 import { Server } from 'socket.io';
 
-import { logger } from './logger';
+import { FileHelper } from './FileHelper';
 
+const defaultDownloadsDir = path.resolve(__dirname, '../', 'downloads');
 export class Routes {
 	ioServer: Server | undefined;
 
-	constructor() {}
+	downloadsDir: string;
+
+	fileHelper: typeof FileHelper;
+
+	constructor(downloadsDir = defaultDownloadsDir) {
+		this.downloadsDir = downloadsDir;
+		this.fileHelper = FileHelper;
+	}
 
 	async defaultMethod(request: IncomingMessage, response: ServerResponse) {
-		logger.info('this is DEFAULT');
-		response.end('this is DEFAULT');
+		response.end('invalid method');
 	}
 
 	async options(request: IncomingMessage, response: ServerResponse) {
-		logger.info('this is OPTIONS');
 		response.writeHead(204);
 		response.end();
 	}
 
-	public async post(request: IncomingMessage, response: ServerResponse) {
-		logger.info('this is POST');
+	async post(request: IncomingMessage, response: ServerResponse) {
 		response.end();
 	}
 
 	async get(request: IncomingMessage, response: ServerResponse) {
-		logger.info('this is GET');
-		response.end();
+		const fileStatuses = await this.fileHelper.getFileStatuses(this.downloadsDir);
+		response.writeHead(200);
+		response.end(JSON.stringify(fileStatuses));
 	}
 
 	setSocketInstance(io: Server) {

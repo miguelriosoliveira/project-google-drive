@@ -7,7 +7,7 @@ import { AddressInfo } from 'net';
 import { Server } from 'socket.io';
 
 import { logger } from './logger';
-import { Routes } from './routes';
+import { Routes } from './Routes';
 
 const PORT = process.env.PORT || 3000;
 

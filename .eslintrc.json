@@ -16,8 +16,11 @@
 	"plugins": ["@typescript-eslint", "prettier"],
 	"rules": {
 		"camelcase": "off",
+		"class-methods-use-this": "off",
+		"no-useless-constructor": "off",
 
 		"@typescript-eslint/explicit-module-boundary-types": "off",
+		"@typescript-eslint/no-empty-function": "off",
 		"@typescript-eslint/no-use-before-define": "error",
 
 		"import/extensions": ["error", "ignorePackages", { "ts": "never", "tsx": "never" }],

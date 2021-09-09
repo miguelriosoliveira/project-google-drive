@@ -1,8 +1,8 @@
 export default {
+	preset: 'ts-jest',
 	clearMocks: true,
 	restoreMocks: true,
 	testEnvironment: 'node',
-	collectCoverage: true,
 	collectCoverageFrom: ['src/**/*.ts', '!src/**/index.ts'],
 	coverageDirectory: 'coverage',
 	coverageProvider: 'v8',

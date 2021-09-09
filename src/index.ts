@@ -4,16 +4,31 @@ import fs from 'fs';
 import https from 'https';
 import { AddressInfo } from 'net';
 
+import { Server } from 'socket.io';
+
 import { logger } from './logger';
+import { Routes } from './routes';
 
 const PORT = process.env.PORT || 3000;
 
-const sslConfig = {
-	key: fs.readFileSync('./certificates/key.pem'),
-	cert: fs.readFileSync('./certificates/cert.pem'),
-};
+const routes = new Routes();
 
-const server = https.createServer(sslConfig, (req, res) => res.end('hellouuu'));
+const server = https.createServer(
+	{
+		key: fs.readFileSync('./certificates/key.pem'),
+		cert: fs.readFileSync('./certificates/cert.pem'),
+	},
+	routes.handler.bind(routes),
+);
+
+const ioServer = new Server(server, {
+	cors: {
+		origin: '*',
+		credentials: false,
+	},
+});
+
+ioServer.on('connection', socket => logger.info('Someone connected:', socket.id));
 
 server.listen(PORT, () => {
 	const { address, port } = server.address() as AddressInfo;

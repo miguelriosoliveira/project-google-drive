@@ -41,25 +41,50 @@ describe('#Routes', () => {
 			[request, response] = [...defaultParams];
 		});
 
-		test('it should enable CORS on all requests', () => {
+		test('it should enable CORS on all requests', async () => {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			routes.handler(request, response);
+			await routes.handler(request, response);
 			expect(response.setHeader).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
 		});
 
-		test('given an inexistent route, it should choose the default one', () => {
+		test('given an inexistent method, it should choose the default one', async () => {
 			request.method = 'potato';
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			routes.handler(request, response);
+			await routes.handler(request, response);
 			expect(response.end).toHaveBeenCalledWith('this is DEFAULT');
 		});
 
-		test.todo('given the method OPTIONS, it should choose the options route');
+		test('given the method OPTIONS, it should choose the options route', async () => {
+			request.method = 'OPTIONS';
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			await routes.handler(request, response);
+			expect(response.writeHead).toHaveBeenCalledWith(204);
+			expect(response.end).toHaveBeenCalledWith();
+		});
 
-		test.todo('given the method POST, it should choose the post route');
+		test('given the method POST, it should choose the post route', async () => {
+			request.method = 'POST';
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			jest.spyOn(routes, routes.post.name).mockResolvedValue();
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			await routes.handler(request, response);
+			expect(routes.post).toHaveBeenCalledWith(request, response);
+		});
 
-		test.todo('given the method GET, it should choose the get route');
+		test('given the method GET, it should choose the get route', async () => {
+			request.method = 'GET';
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			jest.spyOn(routes, routes.get.name).mockResolvedValue();
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			await routes.handler(request, response);
+			expect(routes.get).toHaveBeenCalled();
+		});
 	});
 });

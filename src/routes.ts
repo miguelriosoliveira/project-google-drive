@@ -20,7 +20,7 @@ export class Routes {
 		response.end();
 	}
 
-	async post(request: IncomingMessage, response: ServerResponse) {
+	public async post(request: IncomingMessage, response: ServerResponse) {
 		logger.info('this is POST');
 		response.end();
 	}
@@ -34,7 +34,7 @@ export class Routes {
 		this.ioServer = io;
 	}
 
-	handler(request: IncomingMessage, response: ServerResponse) {
+	async handler(request: IncomingMessage, response: ServerResponse) {
 		response.setHeader('Access-Control-Allow-Origin', '*');
 
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment

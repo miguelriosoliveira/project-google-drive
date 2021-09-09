@@ -9,22 +9,23 @@ export class Routes {
 
 	constructor() {}
 
-	private async defaultMethod(request: IncomingMessage, response: ServerResponse) {
-		response.end('hello world');
+	async defaultMethod(request: IncomingMessage, response: ServerResponse) {
+		logger.info('this is DEFAULT');
+		response.end('this is DEFAULT');
 	}
 
-	private async options(request: IncomingMessage, response: ServerResponse) {
+	async options(request: IncomingMessage, response: ServerResponse) {
 		logger.info('this is OPTIONS');
 		response.writeHead(204);
 		response.end();
 	}
 
-	private async post(request: IncomingMessage, response: ServerResponse) {
+	async post(request: IncomingMessage, response: ServerResponse) {
 		logger.info('this is POST');
 		response.end();
 	}
 
-	private async get(request: IncomingMessage, response: ServerResponse) {
+	async get(request: IncomingMessage, response: ServerResponse) {
 		logger.info('this is GET');
 		response.end();
 	}

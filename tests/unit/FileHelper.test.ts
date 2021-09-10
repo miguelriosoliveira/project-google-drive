@@ -5,7 +5,7 @@ import { FileHelper } from '../../src/FileHelper';
 describe('#FileHelper', () => {
 	describe('#getFileStatus', () => {
 		test('it should return list of file statuses in correct format', async () => {
-			const statMock = {
+			const statMock: Partial<fs.Stats> = {
 				dev: 16777220,
 				mode: 33188,
 				nlink: 1,
@@ -20,17 +20,14 @@ describe('#FileHelper', () => {
 				mtimeMs: 1630702588444.2876,
 				ctimeMs: 1630702588452.0754,
 				birthtimeMs: 1630702588443.3276,
-				atime: '2021-09-03T20:56:30.337Z',
-				mtime: '2021-09-03T20:56:28.444Z',
-				ctime: '2021-09-03T20:56:28.452Z',
-				birthtime: '2021-09-03T20:56:28.443Z',
+				atime: new Date('2021-09-03T20:56:30.337Z'),
+				mtime: new Date('2021-09-03T20:56:28.444Z'),
+				ctime: new Date('2021-09-03T20:56:28.452Z'),
+				birthtime: new Date('2021-09-03T20:56:28.443Z'),
 			};
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			jest.spyOn(fs.promises, fs.promises.readdir.name).mockResolvedValue(['file.png']);
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			jest.spyOn(fs.promises, fs.promises.stat.name).mockResolvedValue(statMock);
+
+			jest.spyOn(fs.promises, 'readdir').mockResolvedValue(['file.png'] as unknown as fs.Dirent[]);
+			jest.spyOn(fs.promises, 'stat').mockResolvedValue(statMock as fs.Stats);
 			process.env.USER = 'system_user';
 			const fileStatuses = await FileHelper.getFileStatuses('/tmp');
 			const expectedFileStatuses = [

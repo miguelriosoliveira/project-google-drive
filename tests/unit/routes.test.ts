@@ -13,8 +13,8 @@ beforeEach(() => {
 describe('#Routes', () => {
 	type Request = Partial<IncomingMessage>;
 	type Response = Partial<ServerResponse>;
-	let request: Request;
-	let response: Response;
+	let request: IncomingMessage;
+	let response: ServerResponse;
 	const defaultParams: [Request, Response] = [
 		{
 			method: '',
@@ -28,7 +28,7 @@ describe('#Routes', () => {
 	];
 
 	beforeEach(() => {
-		[request, response] = [...defaultParams];
+		[request as Request, response as Response] = [...defaultParams];
 	});
 
 	describe('#setSocketInstance', () => {
@@ -42,24 +42,18 @@ describe('#Routes', () => {
 
 	describe('#handler', () => {
 		test('it should enable CORS on all requests', async () => {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			await routes.handler(request, response);
 			expect(response.setHeader).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
 		});
 
 		test('given an inexistent method, it should choose the default one', async () => {
 			request.method = 'potato';
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			await routes.handler(request, response);
 			expect(response.end).toHaveBeenCalledWith('invalid method');
 		});
 
 		test('given the method OPTIONS, it should choose the options route', async () => {
 			request.method = 'OPTIONS';
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			await routes.handler(request, response);
 			expect(response.writeHead).toHaveBeenCalledWith(204);
 			expect(response.end).toHaveBeenCalledWith();
@@ -67,22 +61,14 @@ describe('#Routes', () => {
 
 		test('given the method POST, it should choose the post route', async () => {
 			request.method = 'POST';
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			jest.spyOn(routes, routes.post.name).mockResolvedValue();
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
+			jest.spyOn(routes, 'post').mockResolvedValue();
 			await routes.handler(request, response);
 			expect(routes.post).toHaveBeenCalledWith(request, response);
 		});
 
 		test('given the method GET, it should choose the get route', async () => {
 			request.method = 'GET';
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			jest.spyOn(routes, routes.get.name).mockResolvedValue();
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
+			jest.spyOn(routes, 'get').mockResolvedValue();
 			await routes.handler(request, response);
 			expect(routes.get).toHaveBeenCalled();
 		});
@@ -99,15 +85,7 @@ describe('#Routes', () => {
 				},
 			];
 			request.method = 'GET';
-			jest
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				.spyOn(routes.fileHelper, routes.fileHelper.getFileStatuses.name)
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				.mockResolvedValue(fileStatusesMocks);
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
+			jest.spyOn(routes.fileHelper, 'getFileStatuses').mockResolvedValue(fileStatusesMocks);
 			await routes.handler(request, response);
 			expect(response.writeHead).toHaveBeenCalledWith(200);
 			expect(response.end).toHaveBeenCalledWith(JSON.stringify(fileStatusesMocks));

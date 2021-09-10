@@ -19,7 +19,7 @@ export class FileHelper {
 		const fileStatusesFormatted = fileStatuses.map<FileStatus>((fileStatus, index) => ({
 			name: fileNames[index],
 			owner,
-			last_modified: String(fileStatus.birthtime),
+			last_modified: fileStatus.birthtime.toISOString(),
 			size: prettyBytes(fileStatus.size),
 		}));
 		return fileStatusesFormatted;

@@ -32,5 +32,6 @@ ioServer.on('connection', socket => logger.info('Someone connected:', socket.id)
 
 server.listen(PORT, () => {
 	const { address, port } = server.address() as AddressInfo;
-	logger.info(`🚀 Server running on https://${address}:${port}`);
+	const addressFixed = address === '::' ? 'localhost' : address;
+	logger.info(`🚀 Server running on https://${addressFixed}:${port}`);
 });

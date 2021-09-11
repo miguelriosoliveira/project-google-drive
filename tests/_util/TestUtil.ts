@@ -1,14 +1,36 @@
-import { Readable } from 'stream';
+import { Readable, Transform, Writable } from 'stream';
 
 export class TestUtil {
 	static generateReadableStream(data: unknown[]) {
-		const readableStream = new Readable({
+		return new Readable({
 			objectMode: true,
-			async read() {
+			read() {
+				console.log('>>>>>>>>>');
 				data.forEach(chunk => this.push(chunk));
 				this.push(null);
 			},
 		});
-		return readableStream;
+	}
+
+	static generateWritableStream(onData: (chunk: unknown) => void) {
+		return new Writable({
+			objectMode: true,
+			write(chunk, encondig, callback) {
+				console.log('===============================');
+				onData(chunk);
+				callback();
+			},
+		});
+	}
+
+	static generateTransformStream(onTransform: (chunk: unknown) => void) {
+		return new Transform({
+			objectMode: true,
+			transform(chunk, encoding, callback) {
+				console.log('---------------------------------', chunk);
+				onTransform(chunk);
+				callback(null);
+			},
+		});
 	}
 }

@@ -1,14 +1,22 @@
+import fs from 'fs';
+import { Readable } from 'stream';
+// eslint-disable-next-line import/no-unresolved
+import { pipeline } from 'stream/promises';
+
 import Busboy from 'busboy';
 import { Server } from 'socket.io';
+
+import { logger } from './logger';
 
 interface UploadHandlerProps {
 	io: Server;
 	socketId: string;
+	downloadsDir: string;
 }
 
 interface OnFileProps {
 	fieldName: string;
-	file: File;
+	fileStream: Readable;
 	fileName: string;
 }
 
@@ -18,10 +26,30 @@ interface RegisterEventsProps {
 }
 
 export class UploadHandler {
-	constructor({ io, socketId }: UploadHandlerProps) {}
+	io: Server;
 
-	onFile({ fieldName, file, fileName }: OnFileProps) {
-		return 'batata';
+	socketId: string;
+
+	downloadsDir: string;
+
+	constructor({ io, socketId, downloadsDir }: UploadHandlerProps) {
+		this.io = io;
+		this.socketId = socketId;
+		this.downloadsDir = downloadsDir;
+	}
+
+	handleFileBytes(fileName: string) {
+		// return fs.createWriteStream(fileName);
+	}
+
+	async onFile({ fieldName, fileStream, fileName }: OnFileProps) {
+		const saveTo = `${this.downloadsDir}/${fileName}`;
+		await pipeline(
+			fileStream,
+			this.handleFileBytes.apply(this, [fileName]) as unknown as fs.WriteStream,
+			fs.createWriteStream(saveTo),
+		);
+		logger.info(`File [${fileName}] finished!`);
 	}
 
 	registerEvents({ headers, onFinish }: RegisterEventsProps) {

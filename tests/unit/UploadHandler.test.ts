@@ -19,28 +19,30 @@ beforeEach(() => {
 });
 
 describe('#UploadHandler', () => {
-	// describe('#registerEvents', () => {
-	// 	test('it should call onFile and onFinish functions on Busboy instance', () => {
-	// 		jest.spyOn(uploadHandler, 'onFile').mockResolvedValue();
-	// 		const headers = { 'content-type': 'multipart/form-data; boundary=' };
-	// 		const onFinishMock = jest.fn();
-	// 		const busboyInstance = uploadHandler.registerEvents({ headers, onFinish: onFinishMock });
-	// 		const readableStream = TestUtil.generateReadableStream(['chunks', 'of', 'data']);
-	// 		busboyInstance.emit('file', 'fieldName', readableStream, 'file.txt');
-	// 		busboyInstance.listeners('finish')[0].call(this);
-	// 		expect(uploadHandler.onFile).toHaveBeenCalled();
-	// 		expect(onFinishMock).toHaveBeenCalled();
-	// 	});
-	// });
+	describe('#registerEvents', () => {
+		test('it should call onFile and onFinish functions on Busboy instance', () => {
+			jest.spyOn(uploadHandler, 'onFile').mockResolvedValue();
+			const onFinishMock = jest.fn();
+			const busboyInstance = uploadHandler.registerEvents({
+				headers: { 'content-type': 'multipart/form-data; boundary=' },
+				onFinish: onFinishMock,
+			});
+
+			const readableStream = TestUtil.generateReadableStream(['chunks', 'of', 'data']);
+			busboyInstance.emit('file', 'fieldName', readableStream, 'file.txt');
+			busboyInstance.listeners('finish')[0].call(this);
+
+			expect(uploadHandler.onFile).toHaveBeenCalled();
+			expect(onFinishMock).toHaveBeenCalled();
+		});
+	});
 
 	describe('#onFile', () => {
 		test('given a stream chunk, it should save it on disk', async () => {
 			const onTransformMock = jest.fn();
 			jest
 				.spyOn(uploadHandler, 'handleFileBytes')
-				.mockImplementation(
-					() => TestUtil.generateTransformStream(onTransformMock) as unknown as fs.WriteStream,
-				);
+				.mockImplementation(() => TestUtil.generateTransformStream(onTransformMock));
 
 			const onDataMock = jest.fn();
 			jest
@@ -54,10 +56,10 @@ describe('#UploadHandler', () => {
 				fileName: 'video.mov',
 			});
 
-			// expect(onTransformMock.mock.calls.join()).toStrictEqual(chunks.join());
-			// expect(uploadHandler.handleFileBytes).toHaveBeenCalled();
-			// expect(fs.createWriteStream).toHaveBeenCalledWith(`${uploadHandler.downloadsDir}/video.mov`);
+			expect(onTransformMock.mock.calls.join()).toStrictEqual(chunks.join());
 			expect(onDataMock.mock.calls.join()).toStrictEqual(chunks.join());
+			expect(uploadHandler.handleFileBytes).toHaveBeenCalledWith('video.mov');
+			expect(fs.createWriteStream).toHaveBeenCalledWith(`${uploadHandler.downloadsDir}/video.mov`);
 		});
 	});
 });

@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { Readable } from 'stream';
+import { Readable, Transform, Writable } from 'stream';
 // eslint-disable-next-line import/no-unresolved
 import { pipeline } from 'stream/promises';
 
@@ -46,7 +46,9 @@ export class UploadHandler {
 		const saveTo = `${this.downloadsDir}/${fileName}`;
 		await pipeline(
 			fileStream,
-			this.handleFileBytes.apply(this, [fileName]) as unknown as fs.WriteStream,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			this.handleFileBytes.apply(this, [fileName]),
 			fs.createWriteStream(saveTo),
 		);
 		logger.info(`File [${fileName}] finished!`);

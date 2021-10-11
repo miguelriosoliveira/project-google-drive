@@ -1,6 +1,10 @@
 import { Readable, Transform, Writable } from 'stream';
 
 export class TestUtil {
+	static mockDateNow(dates: number[]) {
+		dates.forEach(date => jest.spyOn(Date, 'now').mockReturnValueOnce(date));
+	}
+
 	static generateReadableStream(chunks: unknown[]) {
 		return new Readable({
 			objectMode: true,
@@ -11,21 +15,21 @@ export class TestUtil {
 		});
 	}
 
-	static generateTransformStream(onTransform: (chunk: unknown) => void) {
+	static generateTransformStream(handleTransformData: (chunk: unknown) => void) {
 		return new Transform({
 			objectMode: true,
 			transform(chunk, encoding, next) {
-				onTransform(chunk);
+				handleTransformData(chunk);
 				next(null, chunk);
 			},
 		});
 	}
 
-	static generateWritableStream(onData: (chunk: unknown) => void) {
+	static generateWritableStream(handleWriteData: (chunk: unknown) => void) {
 		return new Writable({
 			objectMode: true,
 			write(chunk, encoding, next) {
-				onData(chunk);
+				handleWriteData(chunk);
 				next();
 			},
 		});

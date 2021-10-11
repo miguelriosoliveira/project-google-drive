@@ -34,6 +34,7 @@
 				}
 			}
 		],
+		"import/no-unresolved": ["error", { "ignore": ["stream/promises"] }],
 		"import/prefer-default-export": "off",
 
 		"prettier/prettier": "error"

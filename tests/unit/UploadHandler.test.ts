@@ -53,11 +53,7 @@ describe('UploadHandler', () => {
 				.mockImplementation(() => TestUtil.generateWritableStream(onDataMock) as fs.WriteStream);
 
 			const chunks = ['hey', 'dude'];
-			await uploadHandler.onFile({
-				fieldName: 'video',
-				fileStream: TestUtil.generateReadableStream(chunks),
-				fileName: 'video.mov',
-			});
+			await uploadHandler.onFile('video', TestUtil.generateReadableStream(chunks), 'video.mov');
 
 			expect(onTransformMock.mock.calls.join()).toStrictEqual(chunks.join());
 			expect(onDataMock.mock.calls.join()).toStrictEqual(chunks.join());

@@ -15,12 +15,6 @@ interface UploadHandlerProps {
 	messageDelay?: number;
 }
 
-interface OnFileProps {
-	fieldName: string;
-	fileStream: Readable;
-	fileName: string;
-}
-
 interface RegisterEventsProps {
 	headers: Record<string, unknown>;
 	onFinish: () => void;
@@ -70,7 +64,7 @@ export class UploadHandler {
 		return transformStream;
 	}
 
-	async onFile({ fieldName, fileStream, fileName }: OnFileProps) {
+	async onFile(fieldName: string, fileStream: Readable, fileName: string) {
 		const saveTo = `${this.downloadsDir}/${fileName}`;
 		await pipeline(
 			fileStream,

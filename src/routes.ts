@@ -1,19 +1,24 @@
 import { IncomingMessage, RequestListener, ServerResponse } from 'http';
 import path from 'path';
+import { pipeline } from 'stream/promises';
+import { parse } from 'url';
 
 import { Server } from 'socket.io';
 
 import { FileHelper } from './FileHelper';
+import { logger } from './logger';
+import { UploadHandler } from './UploadHandler';
 
-const defaultDownloadsDir = path.resolve(__dirname, '../', 'downloads');
+const DEFAULT_DOWNLOADS_DIR = path.resolve(__dirname, '../', 'downloads');
+
 export class Routes {
-	ioServer: Server | undefined;
+	ioServer?: Server;
 
 	downloadsDir: string;
 
 	fileHelper: typeof FileHelper;
 
-	constructor(downloadsDir = defaultDownloadsDir) {
+	constructor(downloadsDir = DEFAULT_DOWNLOADS_DIR) {
 		this.downloadsDir = downloadsDir;
 		this.fileHelper = FileHelper;
 	}
@@ -28,7 +33,41 @@ export class Routes {
 	}
 
 	async post(request: IncomingMessage, response: ServerResponse) {
-		response.end();
+		const { headers, url } = request;
+
+		if (!url) {
+			throw new Error('Missing URL');
+		}
+
+		const { query } = parse(url, true);
+		const { socketId } = query as { socketId: string };
+
+		if (!this.ioServer) {
+			throw new Error('Socket instance not set');
+		}
+
+		if (!socketId) {
+			throw new Error('Missing Socket ID');
+		}
+
+		const uploadHandler = new UploadHandler({
+			io: this.ioServer,
+			socketId,
+			downloadsDir: this.downloadsDir,
+		});
+
+		const busboyInstance = uploadHandler.registerEvents({
+			headers,
+			onFinish: () => {
+				response.writeHead(200);
+				const data = JSON.stringify({ result: 'Files uploaded successfully' });
+				response.end(data);
+			},
+		});
+
+		await pipeline(request, busboyInstance);
+
+		logger.info('Request finished successfully');
 	}
 
 	async get(request: IncomingMessage, response: ServerResponse) {

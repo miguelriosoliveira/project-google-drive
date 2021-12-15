@@ -2,15 +2,19 @@ import http, { IncomingMessage, ServerResponse } from 'http';
 
 import io from 'socket.io';
 
+import { logger } from '../../src/logger';
 import { Routes } from '../../src/Routes';
+import { UploadHandler } from '../../src/UploadHandler';
+import { TestUtil } from '../_util/TestUtil';
 
 let routes: Routes;
 
 beforeEach(() => {
 	routes = new Routes();
+	jest.spyOn(logger, 'info').mockImplementation(() => {});
 });
 
-describe('#Routes', () => {
+describe('Routes', () => {
 	type Request = Partial<IncomingMessage>;
 	type Response = Partial<ServerResponse>;
 	let request: IncomingMessage;
@@ -31,7 +35,7 @@ describe('#Routes', () => {
 		[request as Request, response as Response] = [...defaultParams];
 	});
 
-	describe('#setSocketInstance', () => {
+	describe('.setSocketInstance', () => {
 		test('it should store io server instance', () => {
 			const httpServer = http.createServer();
 			const ioServer = new io.Server(httpServer);
@@ -40,7 +44,7 @@ describe('#Routes', () => {
 		});
 	});
 
-	describe('#handler', () => {
+	describe('.handler', () => {
 		test('it should enable CORS on all requests', async () => {
 			await routes.handler(request, response);
 			expect(response.setHeader).toHaveBeenCalledWith('Access-Control-Allow-Origin', '*');
@@ -74,7 +78,7 @@ describe('#Routes', () => {
 		});
 	});
 
-	describe('#get', () => {
+	describe('.get', () => {
 		test('it should list all filed available', async () => {
 			const fileStatusesMocks = [
 				{
@@ -89,6 +93,70 @@ describe('#Routes', () => {
 			await routes.handler(request, response);
 			expect(response.writeHead).toHaveBeenCalledWith(200);
 			expect(response.end).toHaveBeenCalledWith(JSON.stringify(fileStatusesMocks));
+		});
+	});
+
+	describe('.post', () => {
+		test('it should throw error if the URL is missing in the request', async () => {
+			request = Object.assign(TestUtil.generateReadableStream(['some', 'data']), request, {
+				method: 'POST',
+			});
+
+			const asyncCall = routes.handler(request, response);
+
+			expect(asyncCall).rejects.toThrowError('Missing URL');
+		});
+
+		test('it should throw error if the socket server is not set', async () => {
+			request = Object.assign(TestUtil.generateReadableStream(['some', 'data']), request, {
+				method: 'POST',
+				url: '?socketId=10',
+			});
+
+			const asyncCall = routes.handler(request, response);
+
+			expect(asyncCall).rejects.toThrowError('Socket instance not set');
+		});
+
+		test('it should throw error if the socket ID is missing in the URL', async () => {
+			const httpServer = http.createServer();
+			const ioServer = new io.Server(httpServer);
+			routes.setSocketInstance(ioServer);
+			request = Object.assign(TestUtil.generateReadableStream(['some', 'data']), request, {
+				method: 'POST',
+				url: '?notSocketId=10',
+			});
+
+			const asyncCall = routes.handler(request, response);
+
+			expect(asyncCall).rejects.toThrowError('Missing Socket ID');
+		});
+
+		test('it should validate POST workflow', async () => {
+			const httpServer = http.createServer();
+			const ioServer = new io.Server(httpServer);
+			routes.setSocketInstance(ioServer);
+			request = Object.assign(TestUtil.generateReadableStream(['some', 'data']), request, {
+				method: 'POST',
+				url: '?socketId=10',
+			});
+			response = Object.assign(
+				TestUtil.generateWritableStream(() => {}),
+				response,
+			);
+			jest.spyOn(UploadHandler.prototype, 'registerEvents').mockImplementation(({ onFinish }) => {
+				const writableStream = TestUtil.generateWritableStream(() => {});
+				writableStream.on('finish', onFinish);
+				return writableStream;
+			});
+
+			await routes.handler(request, response);
+
+			expect(UploadHandler.prototype.registerEvents).toHaveBeenCalled();
+			expect(response.writeHead).toHaveBeenCalledWith(200);
+			expect(response.end).toHaveBeenCalledWith(
+				JSON.stringify({ result: 'Files uploaded successfully' }),
+			);
 		});
 	});
 });

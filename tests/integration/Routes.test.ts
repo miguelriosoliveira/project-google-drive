@@ -18,7 +18,6 @@ describe('Routes', () => {
 	});
 
 	afterAll(async () => {
-		// console.log(defaultDownloadsDir);
 		await fs.promises.rm(defaultDownloadsDir, { recursive: true });
 	});
 

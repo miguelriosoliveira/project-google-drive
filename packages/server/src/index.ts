@@ -28,7 +28,7 @@ const ioServer = new Server(server, {
 	},
 });
 
-ioServer.on('connection', socket => logger.info('Someone connected:', socket.id));
+ioServer.on('connection', socket => logger.info(`Someone connected: ${socket.id}`));
 
 server.listen(PORT, () => {
 	const { address, port } = server.address() as AddressInfo;

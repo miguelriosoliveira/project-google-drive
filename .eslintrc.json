@@ -1,19 +1,25 @@
 {
 	"env": {
+		"browser": true,
 		"es2021": true,
 		"node": true
 	},
 	"extends": [
-		"airbnb-base",
+		"plugin:react/recommended",
+		"airbnb",
 		"plugin:@typescript-eslint/recommended",
-		"plugin:prettier/recommended"
+		"plugin:prettier/recommended",
+		"plugin:unicorn/recommended"
 	],
 	"parser": "@typescript-eslint/parser",
 	"parserOptions": {
-		"ecmaVersion": 12,
+		"ecmaFeatures": {
+			"jsx": true
+		},
+		"ecmaVersion": 13,
 		"sourceType": "module"
 	},
-	"plugins": ["@typescript-eslint", "import", "prettier"],
+	"plugins": ["react", "@typescript-eslint", "import", "prettier", "unicorn"],
 	"rules": {
 		"camelcase": "off",
 		"class-methods-use-this": "off",
@@ -37,7 +43,38 @@
 		"import/no-unresolved": ["error", { "ignore": ["stream/promises"] }],
 		"import/prefer-default-export": "off",
 
-		"prettier/prettier": "error"
+		"prettier/prettier": "error",
+
+		"react/react-in-jsx-scope": "off",
+
+		"unicorn/filename-case": [
+			"error",
+			{
+				"cases": {
+					"camelCase": true,
+					"pascalCase": true
+				}
+			}
+		],
+		"unicorn/no-array-for-each": "off",
+		"unicorn/no-nested-ternary": "off",
+		"unicorn/no-null": "off",
+		"unicorn/prefer-node-protocol": "off",
+		"unicorn/prevent-abbreviations": [
+			"error",
+			{
+				"replacements": {
+					"ref": false,
+					"refs": false,
+					"prop": false,
+					"props": false
+				},
+				"allowList": {
+					"props": true,
+					"params": true
+				}
+			}
+		]
 	},
 	"settings": {
 		"import/resolver": {

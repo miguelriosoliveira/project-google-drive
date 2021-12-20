@@ -1,21 +1,35 @@
 {
-  "name": "project-google-drive",
-  "version": "1.0.0",
-  "license": "MIT",
-  "author": "Miguel Rios <miguelriosoliveira@gmail.com>",
-  "repository": "git@github.com:miguelriosoliveira/project-google-drive.git",
-  "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ]
-  },
-  "scripts": {
-    "dev:server": "yarn workspace @project-google-drive/server dev",
-    "dev:web": "yarn workspace @project-google-drive/web dev",
-    "dev": "concurrently \"yarn:dev:*\""
-  },
-  "devDependencies": {
-    "concurrently": "^6.4.0"
-  }
+	"name": "project-google-drive",
+	"version": "1.0.0",
+	"license": "MIT",
+	"author": "Miguel Rios <miguelriosoliveira@gmail.com>",
+	"repository": "git@github.com:miguelriosoliveira/project-google-drive.git",
+	"private": true,
+	"workspaces": {
+		"packages": [
+			"packages/*"
+		]
+	},
+	"scripts": {
+		"dev:server": "yarn workspace @project-google-drive/server dev",
+		"dev:web": "yarn workspace @project-google-drive/web dev",
+		"dev": "concurrently \"yarn:dev:*\"",
+		"lint": "eslint ."
+	},
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^5.7.0",
+		"@typescript-eslint/parser": "^5.7.0",
+		"concurrently": "^6.4.0",
+		"eslint": "^8.5.0",
+		"eslint-config-airbnb": "^19.0.2",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-import-resolver-typescript": "^2.5.0",
+		"eslint-plugin-import": "^2.25.3",
+		"eslint-plugin-jsx-a11y": "^6.5.1",
+		"eslint-plugin-prettier": "^4.0.0",
+		"eslint-plugin-react": "^7.27.1",
+		"eslint-plugin-react-hooks": "^4.3.0",
+		"eslint-plugin-unicorn": "^39.0.0",
+		"prettier": "^2.5.1"
+	}
 }

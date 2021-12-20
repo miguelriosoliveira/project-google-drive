@@ -1,9 +1,9 @@
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
+import type { NextPage } from 'next';
+import Head from 'next/head';
 
-const Home: NextPage = () => {
+import styles from '../styles/Home.module.css';
+
+const Home: NextPage = function () {
   return (
     <div className={styles.container}>
       <Head>
@@ -12,61 +12,166 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.tsx</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
+      <div className="navbar-fixed">
+        <nav className="nav-extended white">
+          <div className="nav-wrapper white">
+            <ul>
+              <li>
+                <a href="#!" className="title grey-text text-darken-1">
+                  JS Expert Drive
+                </a>
+              </li>
+            </ul>
+            <div className="search-wrapper">
+              <i className="material-icons">search</i>
+              <input type="search" name="Search" placeholder="Search Drive" />
+            </div>
+            <ul className="right">
+              <li>
+                <a href="#!">
+                  <i className="material-icons grey-text text-darken-1">apps</i>
+                </a>
+              </li>
+              <li>
+                <a href="#!">
+                  <i className="material-icons grey-text text-darken-1">notifications</i>
+                </a>
+              </li>
+              <li>
+                <a href="#!">
+                  <img
+                    src="https://pbs.twimg.com/profile_images/1192804356204224512/8v6Xx019_400x400.jpg"
+                    className="circle"
+                  />
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div className="nav-wrapper nav-2">
+            <ul>
+              <li>
+                <button
+                  className="waves-effect waves-light btn btn-flat white-text"
+                  id="newFileBtn"
+                >
+                  New
+                </button>
+                <input type="file" id="fileElem" multiple accept="image/video/audio*" />
+              </li>
+            </ul>
+            <ul className="right">
+              <li>
+                <a href="#!">
+                  <i className="material-icons grey-text text-darken-1">view_list</i>
+                </a>
+              </li>
+              <li>
+                <a href="#!">
+                  <i className="material-icons grey-text text-darken-1">info</i>
+                </a>
+              </li>
+              <li>
+                <a href="#!">
+                  <i className="material-icons grey-text text-darken-1">settings</i>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </div>
+      <ul className="side-nav fixed floating transparent z-depth-0">
+        <li className="active">
+          <a href="#">
+            <i className="material-icons blue-text text-darken-1">dashboard</i>
+            My Drive
           </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
+        </li>
+        <li>
+          <a href="#">
+            <i className="material-icons">devices</i>Computers
           </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
+        </li>
+        <li>
+          <a href="#">
+            <i className="material-icons">people</i>Shared with me
           </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
+        </li>
+        <li>
+          <a href="#">
+            <i className="material-icons">access_time</i>Recent
           </a>
+        </li>
+        <li>
+          <a href="#">
+            <i className="material-icons">camera</i>Google Photos
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i className="material-icons">star</i>Starred
+          </a>
+        </li>
+        <li>
+          <a href="#">
+            <i className="material-icons">delete</i>Trash
+          </a>
+        </li>
+        <li>
+          <div className="divider" />
+        </li>
+        <li>
+          <a href="#">
+            <i className="material-icons">cloud</i>Backups
+          </a>
+        </li>
+        <li>
+          <div className="divider" />
+        </li>
+        <li>
+          <a href="#">
+            <i className="material-icons">storage</i>Upgrade storage
+          </a>
+        </li>
+      </ul>
+
+      <div className="main">
+        <div className="container-fluid" id="dropArea">
+          <table className="highlight bordered">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Owner</th>
+                <th>Last Modified</th>
+                <th>File Size</th>
+              </tr>
+            </thead>
+
+            <tbody id="tbody" />
+          </table>
         </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
+      </div>
+      <footer>
+        <div className="row">
+          <div id="progressModal" className="modal bottom-sheet col s10 offset-s10">
+            <div className="modal-content">
+              <div className="row">
+                <div className="col s2">
+                  <progress id="progressBar" max="100" value="0" />
+                </div>
+              </div>
+              <div className="row">
+                <div className="col s2">
+                  <h4 id="output" className="center">
+                    Uploading... 0%
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </footer>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

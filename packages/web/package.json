@@ -1,6 +1,8 @@
 {
-  "name": "web",
-  "private": true,
+  "name": "@project-google-drive/web",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "Miguel Rios <miguelriosoliveira@gmail.com>",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

@@ -1,0 +1,14 @@
+{
+  "name": "@project-google-drive/web",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "Miguel Rios <miguelriosoliveira@gmail.com>",
+  "scripts": {
+    "start": "http-server public",
+    "dev": "http-server public --cert certificates/cert.pem --key certificates/key.pem --ssl -o"
+  },
+  "keywords": [],
+  "dependencies": {
+    "http-server": "^0.12.3"
+  }
+}

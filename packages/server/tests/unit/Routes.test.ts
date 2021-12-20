@@ -19,7 +19,7 @@ describe('Routes', () => {
 	type Response = Partial<ServerResponse>;
 	let request: IncomingMessage;
 	let response: ServerResponse;
-	const defaultParams: [Request, Response] = [
+	const defaultParameters: [Request, Response] = [
 		{
 			method: '',
 			headers: { 'Content-Type': 'multipart/form-data' },
@@ -32,7 +32,8 @@ describe('Routes', () => {
 	];
 
 	beforeEach(() => {
-		[request as Request, response as Response] = [...defaultParams];
+		// eslint-disable-next-line no-global-assign
+		[request as Request, response as Response] = [...defaultParameters];
 	});
 
 	describe('.setSocketInstance', () => {

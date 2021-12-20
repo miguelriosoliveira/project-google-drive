@@ -9,11 +9,11 @@ interface FileStatus {
 	size: string;
 }
 
-export class FileHelper {
-	static async getFileStatuses(downloadsDir: string) {
-		const fileNames = await fs.promises.readdir(downloadsDir);
+export const FileHelper = {
+	async getFileStatuses(downloadsFolder: string) {
+		const fileNames = await fs.promises.readdir(downloadsFolder);
 		const fileStatuses = await Promise.all(
-			fileNames.map(fileName => fs.promises.stat(`${downloadsDir}/${fileName}`)),
+			fileNames.map(fileName => fs.promises.stat(`${downloadsFolder}/${fileName}`)),
 		);
 		const owner = process.env.USER as string;
 		const fileStatusesFormatted = fileStatuses.map<FileStatus>((fileStatus, index) => ({
@@ -23,5 +23,5 @@ export class FileHelper {
 			size: prettyBytes(fileStatus.size),
 		}));
 		return fileStatusesFormatted;
-	}
-}
+	},
+};

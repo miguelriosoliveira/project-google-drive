@@ -11,14 +11,14 @@ import { Routes } from '../../src/Routes';
 import { TestUtil } from '../_util/TestUtil';
 
 describe('Routes', () => {
-	let defaultDownloadsDir = '';
+	let defaultDownloadsFolder = '';
 
 	beforeAll(async () => {
-		defaultDownloadsDir = await fs.promises.mkdtemp(path.join(tmpdir(), 'downloads-'));
+		defaultDownloadsFolder = await fs.promises.mkdtemp(path.join(tmpdir(), 'downloads-'));
 	});
 
 	afterAll(async () => {
-		await fs.promises.rm(defaultDownloadsDir, { recursive: true });
+		await fs.promises.rm(defaultDownloadsFolder, { recursive: true });
 	});
 
 	beforeEach(() => {
@@ -28,6 +28,7 @@ describe('Routes', () => {
 	describe('.handler', () => {
 		test('it should upload file to the folder', async () => {
 			const filename = 'lorem-ipsum.txt';
+			// eslint-disable-next-line unicorn/prefer-module
 			const fileStream = fs.createReadStream(path.join(__dirname, './mocks/lorem-ipsum.txt'));
 			const responseStream = TestUtil.generateWritableStream(() => {});
 
@@ -46,18 +47,18 @@ describe('Routes', () => {
 				end: jest.fn(),
 			}) as unknown as ServerResponse;
 
-			const routes = new Routes(defaultDownloadsDir);
+			const routes = new Routes(defaultDownloadsFolder);
 			const httpServer = http.createServer();
 			const ioServer = new io.Server(httpServer);
 			routes.setSocketInstance(ioServer);
 
-			const dirFiles = await fs.promises.readdir(defaultDownloadsDir);
-			expect(dirFiles).toEqual([]);
+			const filesInFolder = await fs.promises.readdir(defaultDownloadsFolder);
+			expect(filesInFolder).toEqual([]);
 
 			await routes.handler(request, response);
 
-			const dirFilesAfter = await fs.promises.readdir(defaultDownloadsDir);
-			expect(dirFilesAfter).toEqual([filename]);
+			const filesInFolderAfter = await fs.promises.readdir(defaultDownloadsFolder);
+			expect(filesInFolderAfter).toEqual([filename]);
 
 			expect(response.writeHead).toHaveBeenCalledWith(200);
 			expect(response.end).toHaveBeenCalledWith(

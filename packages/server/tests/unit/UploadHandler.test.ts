@@ -55,8 +55,8 @@ describe('UploadHandler', () => {
 			const chunks = ['hey', 'dude'];
 			await uploadHandler.onFile('video', TestUtil.generateReadableStream(chunks), 'video.mov');
 
-			expect(onTransformMock.mock.calls.join()).toStrictEqual(chunks.join());
-			expect(onDataMock.mock.calls.join()).toStrictEqual(chunks.join());
+			expect(onTransformMock.mock.calls.join(',')).toStrictEqual(chunks.join(','));
+			expect(onDataMock.mock.calls.join(',')).toStrictEqual(chunks.join(','));
 			expect(uploadHandler.handleFileBytes).toHaveBeenCalledWith('video.mov');
 			expect(fs.createWriteStream).toHaveBeenCalledWith(`${uploadHandler.downloadsDir}/video.mov`);
 		});
@@ -82,7 +82,7 @@ describe('UploadHandler', () => {
 			expect(ioServer.to).toHaveBeenCalledTimes(chunks.length);
 			expect(ioServer.emit).toHaveBeenCalledTimes(chunks.length);
 			expect(handleWriteMock).toHaveBeenCalledTimes(chunks.length);
-			expect(handleWriteMock.mock.calls.join()).toStrictEqual(chunks.join());
+			expect(handleWriteMock.mock.calls.join(',')).toStrictEqual(chunks.join(','));
 		});
 
 		test('given a 2sec message delay and that each chunk takes 1sec to be processed, it should only emit 3 out of 5 messages', async () => {

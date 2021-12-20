@@ -68,6 +68,7 @@ export class UploadHandler {
 		const saveTo = `${this.downloadsDir}/${fileName}`;
 		await pipeline(
 			fileStream,
+			// eslint-disable-next-line unicorn/prefer-reflect-apply
 			this.handleFileBytes.apply(this, [fileName]),
 			fs.createWriteStream(saveTo),
 		);

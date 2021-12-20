@@ -9,7 +9,8 @@ import { FileHelper } from './FileHelper';
 import { logger } from './logger';
 import { UploadHandler } from './UploadHandler';
 
-const DEFAULT_DOWNLOADS_DIR = path.resolve(__dirname, '../', 'downloads');
+// eslint-disable-next-line unicorn/prefer-module
+const DEFAULT_DOWNLOADS_FOLDER = path.resolve(__dirname, '../', 'downloads');
 
 export class Routes {
 	ioServer?: Server;
@@ -18,8 +19,8 @@ export class Routes {
 
 	fileHelper: typeof FileHelper;
 
-	constructor(downloadsDir = DEFAULT_DOWNLOADS_DIR) {
-		this.downloadsDir = downloadsDir;
+	constructor(downloadsFolder = DEFAULT_DOWNLOADS_FOLDER) {
+		this.downloadsDir = downloadsFolder;
 		this.fileHelper = FileHelper;
 	}
 
@@ -87,6 +88,7 @@ export class Routes {
 		// @ts-ignore
 		const chosenMethod: RequestListener = this[request.method.toLowerCase()] || this.defaultMethod;
 
+		// eslint-disable-next-line unicorn/prefer-reflect-apply
 		return chosenMethod.apply(this, [request, response]);
 	}
 }
